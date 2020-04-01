@@ -1,5 +1,6 @@
 package Services;
 
+import Entites.Administrator;
 import Entites.NormalUser;
 import Entites.ShopOwner;
 import Entites.User;
@@ -17,6 +18,10 @@ public class UserFactroy
         else if(choice == 2)
         {
             u = new ShopOwner(name, email, pass, gender, birthdate, mobileNo,address);
+        }
+        else if (choice == 3)
+        {
+            u = new Administrator(name, email, pass, gender, birthdate, mobileNo,address);
         }
 
         return u;

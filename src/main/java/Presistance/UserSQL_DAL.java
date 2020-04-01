@@ -66,7 +66,7 @@ public class UserSQL_DAL extends UserDAL
     {
 
         ArrayList<User> user_InSystem = new ArrayList<>();
-        User user;
+        User user = null;
 
         try
         {

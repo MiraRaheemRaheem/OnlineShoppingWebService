@@ -14,13 +14,11 @@ public class NormalController extends UserController
 {
     private NormalUser normalUser;
 
+    @Override
     @RequestMapping(path = "/SignupAsNormal/{name}/{email}/{password}/{gender}/{birthdate}/{mobileNo}/{address}", method = RequestMethod.GET )
-    public boolean SignupAsNormal(@PathVariable String name, @PathVariable String email, @PathVariable
-    String password,@PathVariable String gender, @PathVariable String birthdate, @PathVariable String mobileNo,@PathVariable String address) throws ParseException, SQLException {
+    public boolean Signup(@PathVariable String name, @PathVariable String email, @PathVariable
+    String password,@PathVariable String gender, @PathVariable String birthdate, @PathVariable String mobileNo,@PathVariable String address) throws SQLException, ParseException {
 
-        System.out.println(name+" "+email+" "+password+" "+gender+" "+birthdate+" "+ mobileNo);
-
-        UserSQL_DAL r = (UserSQL_DAL) UserSQL_DAL.getInstance();
         r.SaveUser(name,email, password,gender,birthdate, mobileNo,address,1);
         return true;
     }
