@@ -1,5 +1,4 @@
 package Presistance;
-
 import Entites.User;
 
 import java.sql.*;
@@ -11,32 +10,35 @@ import java.util.List;
 
 public class UserSQL_DAL extends UserDAL
 {
+    static UserSQL_DAL r;
     static Connection con;
     static Statement statement;
     String url = "jdbc:mysql://localhost:3306/online_shopping";
     String userName = "root";
     String password = "123456789";
 
-    UserSQL_DAL()
+    private UserSQL_DAL()
     {
         if(con == null) {
             try {
                 con = DriverManager.getConnection(url, userName, password);
+                statement = con.createStatement();
+                System.out.println("In The IF.");
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
+
     }
 
     @Override
-    public boolean SaveUser(String name, String email, String pass, String gender, String birthdate, String mobileNo, int type) throws ParseException, SQLException
+    public boolean SaveUser(String name, String email, String pass, String gender, String birthdate, String mobileNo,String address, int type) throws ParseException, SQLException
     {
-        statement = con.createStatement();
-        String query = "INSERT INTO `user_`(`USER_TYPE`, `USER_NAME`, `BDATE`, `USER_PASSWORD`, `EMAIL`, `GENDER`, `MOBILE_NUM`) VALUES (?,?,?,?,?,?,?)";
+        String query = "INSERT INTO `user_`(`USER_TYPE`, `USER_NAME`, `BDATE`, `USER_PASSWORD`, `EMAIL`, `GENDER`, `MOBILE_NUM`, `Address`) VALUES (?,?,?,?,?,?,?,?)";
 
-        PreparedStatement preparedStmt = null;
         try {
-            preparedStmt = con.prepareStatement(query);
+            PreparedStatement preparedStmt = con.prepareStatement(query);
+
             preparedStmt.setInt(1, type);
             preparedStmt.setString(2, name);
 
@@ -48,6 +50,7 @@ public class UserSQL_DAL extends UserDAL
 
             preparedStmt.setString(6, gender);
             preparedStmt.setString(7, mobileNo);
+            preparedStmt.setString(8, address);
 
             preparedStmt.execute();
 
@@ -80,8 +83,9 @@ public class UserSQL_DAL extends UserDAL
                 String gender = resultSet.getString(7);
                 String mobileNo = resultSet.getString(8);
                 String d = date.toString();
+                String address = resultSet.getString(9);
 
-                user = f.Create(type,name, email, pass, gender, d, mobileNo);
+                user = f.Create(type,name, email, pass, gender, d, mobileNo, address);
                 user_InSystem.add(user);
             }
 
@@ -92,9 +96,11 @@ public class UserSQL_DAL extends UserDAL
         return user_InSystem;
     }
 
-    @Override
-    public UserDAL getInstance()
+    public static UserDAL getInstance()
     {
-        return null;
+        if(r == null) {
+            r  = new UserSQL_DAL();
+        }
+        return r;
     }
 }

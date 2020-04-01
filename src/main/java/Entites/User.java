@@ -12,8 +12,9 @@ public class User {
     String email;
     String gender;
     String mobileNo;
+    String address;
 
-    public User(String name, String email, String pass, String gender, String birthdate, String mobileNo)
+    public User(String name, String email, String pass, String gender, String birthdate, String mobileNo, String address)
     {
         this.name = name;
         this.email = email;
@@ -21,5 +22,6 @@ public class User {
         this.gender = gender;
         this.mobileNo = mobileNo;
         this.password = pass;
+        this.address = address;
     }
 }
