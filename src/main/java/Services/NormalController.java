@@ -10,7 +10,8 @@ import java.text.ParseException;
 
 @RestController
 
-public class NormalController extends UserController {
+public class NormalController extends UserController
+{
     private NormalUser normalUser;
 
     @RequestMapping(path = "/SignupAsNormal/{name}/{email}/{password}/{gender}/{birthdate}/{mobileNo}/{address}", method = RequestMethod.GET )
