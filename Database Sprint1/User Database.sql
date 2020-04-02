@@ -46,3 +46,16 @@ alter table STORE add constraint FK_OWN foreign key (USERID)
 
 alter table USER_ add constraint FK_IS foreign key (USER_TYPE)
       references USER_TYPE (TYPE_ID) on delete restrict on update restrict;
+      
+alter table user_
+add column Address varchar(100) not null;
+
+alter table user_ 
+drop column EMAIL;
+
+alter table user_ 
+add column EMAIL varchar(100) not null Unique ;
+
+insert into  USER_TYPE(USER_TYPE) values ("Normal User") ;
+insert into  USER_TYPE(USER_TYPE) values ("Store Owner") ;
+insert into  USER_TYPE(USER_TYPE) values ("Administrator") ;

@@ -25,9 +25,13 @@ public class AdministratorController extends UserController
     public boolean Signup(@PathVariable String name, @PathVariable String email, @PathVariable
             String password, @PathVariable String gender, @PathVariable String birthdate, @PathVariable String mobileNo, @PathVariable String address) throws ParseException, SQLException
     {
-
-        r.SaveUser(name,email, password,gender,birthdate, mobileNo,address,3);
-        return true;
+        if(r.CheckEmail(email) == true)
+        {
+            r.SaveUser(name,email, password,gender,birthdate, mobileNo,address,3);
+            return true;
+        }
+        else
+            return false;
     }
 
     @RequestMapping(path = "/GetRegisteredUsers", method = RequestMethod.GET )
