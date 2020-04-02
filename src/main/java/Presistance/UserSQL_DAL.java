@@ -42,7 +42,7 @@ public class UserSQL_DAL extends UserDAL
             preparedStmt.setInt(1, type);
             preparedStmt.setString(2, name);
 
-            Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(birthdate);
+            Date date1 = new SimpleDateFormat("dd-MM-yyyy").parse(birthdate);
             preparedStmt.setDate(3,  new java.sql.Date(date1.getTime()));
 
             preparedStmt.setString(4, pass);
@@ -94,6 +94,27 @@ public class UserSQL_DAL extends UserDAL
         }
 
         return user_InSystem;
+    }
+
+    @Override
+    public boolean CheckEmail(String email)
+    {
+        try
+        {
+            String query = "SELECT EMAIL FROM `user_` WHERE EMAIL = '"+email+"' "  ;
+            ResultSet resultSet = statement.executeQuery(query);
+            resultSet.next();
+
+            if(resultSet.getString(1).length() == 0)
+                return true;
+
+        }
+        catch (SQLException e1)
+        {
+            e1.printStackTrace();
+        }
+
+        return false;
     }
 
     public static UserDAL getInstance()

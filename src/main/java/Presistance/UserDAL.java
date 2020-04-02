@@ -18,5 +18,7 @@ public abstract class UserDAL
 
     public abstract List<User> LoadUser();
 
+    public abstract boolean CheckEmail(String email);
+
     public static UserDAL getInstance(){return null;}
 }

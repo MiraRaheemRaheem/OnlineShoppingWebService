@@ -21,8 +21,13 @@ public class ShopOwnerController extends UserController
             String password, @PathVariable String gender, @PathVariable String birthdate, @PathVariable String mobileNo, @PathVariable String address) throws ParseException, SQLException
     {
 
-        r.SaveUser(name,email, password,gender,birthdate, mobileNo,address,2);
-        return true;
+        if(r.CheckEmail(email) == true)
+        {
+            r.SaveUser(name,email, password,gender,birthdate, mobileNo,address,2);
+            return true;
+        }
+        else
+            return false;
     }
 
 }
