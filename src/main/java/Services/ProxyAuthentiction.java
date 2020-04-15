@@ -11,10 +11,10 @@ import java.util.Vector;
 @RestController
 public class ProxyAuthentiction implements IAuthentiction
 {
+    static ArrayList<String> prohebeted =new ArrayList<String>( Arrays.asList("null", "select", "join","alter","update","delete"));
     @Override
     @RequestMapping(path = "/LoginByName/{name}/{password}", method = RequestMethod.GET )
     public boolean LoginByName(@PathVariable String name,@PathVariable String password){
-        ArrayList<String> prohebeted =new ArrayList<String>( Arrays.asList("null", "select", "join","alter","update","delete"));
         //there's no way to map null with this url but we tried to handle it as much as possible
         if (name!=null && password!=null && (! name.equals(" ")) && (! password.equals(" "))&& password.length()==4)
         {
@@ -29,7 +29,7 @@ public class ProxyAuthentiction implements IAuthentiction
 
     @RequestMapping(path = "/LoginByEmail/{email}/{password}", method = RequestMethod.GET )
     public boolean LoginByEmail(@PathVariable String email,@PathVariable  String password){
-        ArrayList<String> prohebeted =new ArrayList<String>( Arrays.asList("null", "select", "join","alter","update","delete"));
+
         //there's no way to map null with this url but we tried to handle it as much as possible
         if (email!=null && password!=null && (! email.equals(" ")) && (! password.equals(" "))&& password.length()==4)
         {
