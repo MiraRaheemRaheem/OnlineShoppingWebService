@@ -18,7 +18,9 @@ public abstract class UserDAL
 
     public abstract List<User> LoadUser();
 
-    public abstract boolean CheckEmail(String email);
+    public abstract boolean CheckEmailAndUserName(String email, String username);
+
+    public abstract String IsAvailableAccount(String emailOrName, String pass, String Type);
 
     public static UserDAL getInstance(){return null;}
 }

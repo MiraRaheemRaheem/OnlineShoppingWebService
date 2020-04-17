@@ -1,7 +1,6 @@
 package Services;
 
 import Entites.ShopOwner;
-import Presistance.UserSQL_DAL;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,7 +20,7 @@ public class ShopOwnerController extends UserController
             String password, @PathVariable String gender, @PathVariable String birthdate, @PathVariable String mobileNo, @PathVariable String address) throws ParseException, SQLException
     {
 
-        if(r.CheckEmail(email) == true)
+        if(r.CheckEmailAndUserName(email,name) == true)
         {
             r.SaveUser(name,email, password,gender,birthdate, mobileNo,address,2);
             return true;

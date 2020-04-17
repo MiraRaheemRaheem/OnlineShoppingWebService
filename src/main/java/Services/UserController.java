@@ -9,10 +9,10 @@ import java.sql.SQLException;
 import java.text.ParseException;
 
 @RestController
-public abstract class UserController {
+public abstract class UserController
+{
     protected UserSQL_DAL r = (UserSQL_DAL) UserSQL_DAL.getInstance();
 
     public abstract boolean Signup(String name, String email, String password, String gender, String birthdate, String mobileNo, String address) throws SQLException, ParseException;
-    //Login(name:String, password:String ): void
     //Logout(): void
 }
