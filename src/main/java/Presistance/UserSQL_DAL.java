@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -148,8 +149,8 @@ public class UserSQL_DAL extends UserDAL {
                     byteToken = Base64.encodeBase64(encode.getBytes());
                     token = new String(byteToken);
 
-                    LocalDateTime localDate = LocalDateTime.now().plusDays(1);
-                    java.sql.Date newExpireDate = java.sql.Date.valueOf(localDate.toLocalDate());
+                    DateTimeFormatter localDate = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+                    LocalDateTime newExpireDate = LocalDateTime.now();
 
 
                     query = "update`user_` set `token` = ? , `expire_date` = ? where Email = ?";
@@ -161,7 +162,7 @@ public class UserSQL_DAL extends UserDAL {
                         preparedStmt = con.prepareStatement(query);
 
                         preparedStmt.setString(1, token);
-                        preparedStmt.setDate(2,  newExpireDate);
+                        preparedStmt.setTimestamp(2,  Timestamp.valueOf(newExpireDate.plusHours(2)));
                         preparedStmt.setString(3, email);
 
 
