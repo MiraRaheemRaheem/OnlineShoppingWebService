@@ -18,19 +18,19 @@ public class ProxyAuthentiction implements IAuthentiction
     public String LoginByName(@PathVariable String name,@PathVariable String password)
     {
         //there's no way to map null with this url but we tried to handle it as much as possible
-        if (name!=null && password!=null && (! name.equals(" ")) && (! password.equals(" "))&& password.length()==4)
+        if (name!=null && password!=null && (! name.equals(" ")) && (! password.equals(" "))&& password.length() < 4)
         {
             if(prohebeted.contains(name.toLowerCase())||prohebeted.contains(password.toLowerCase())){
                 return "Incorrect Input";
             }
             String token = auth.LoginByName(name,password);
 
-            if(token.length() != 0)
-                return " Logged in Successfully " + token;
+            if(token.equals("false"))
+                return "Please SignUp First";
 
-            return "Please SignUp First";
+            return " Logged in Successfully " + token;
         }
-        return "Please SignUp First";
+        return "Incorrect Input";
     }
 
 
@@ -38,16 +38,17 @@ public class ProxyAuthentiction implements IAuthentiction
     public String LoginByEmail(@PathVariable String email,@PathVariable  String password)
     {
         //there's no way to map null with this url but we tried to handle it as much as possible
-        if (email!=null && password!=null && (! email.equals(" ")) && (! password.equals(" "))&& password.length()==4)
+        if (email!=null && password!=null && (! email.equals(" ")) && (! password.equals(" "))&& password.length() < 4)
         {
             if(prohebeted.contains(email.toLowerCase())||prohebeted.contains(password.toLowerCase())){
                 return "InCorrect Input";
             }
             String token = auth.LoginByEmail(email,password);
-            if(token.length() != 0)
-                return " Logged in Successfully " + token;
 
-            return "Please SignUp First";
+            if(token.equals("false"))
+                return "Please SignUp First";
+
+            return " Logged in Successfully " + token;
         }
         return "InCorrect Input";
     }
