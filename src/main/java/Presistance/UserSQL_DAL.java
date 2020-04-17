@@ -39,7 +39,7 @@ public class UserSQL_DAL extends UserDAL
     }
 
     @Override
-    public boolean SaveUser(String name, String email, String pass, String gender, String birthdate, String mobileNo, String address, int type) throws ParseException, SQLException
+    public String SaveUser(String name, String email, String pass, String gender, String birthdate, String mobileNo, String address, int type) throws ParseException, SQLException
     {
         String query = "INSERT INTO `user_`(`USER_TYPE`, `USER_NAME`, `BDATE`, `USER_PASSWORD`, `EMAIL`, `GENDER`, `MOBILE_NUM`, `Address`) VALUES (?,?,?,?,?,?,?,?)";
 
@@ -62,10 +62,14 @@ public class UserSQL_DAL extends UserDAL
             preparedStmt.execute();
 
         } catch (SQLException e) {
-            return false;
+            return "false";
         }
 
-        return true;
+        long time = System.currentTimeMillis();
+        java.sql.Date currentDate = new java.sql.Date(time);
+        String token = CreateToken(type,name,email,pass,currentDate);
+
+        return token;
     }
 
     @Override
@@ -110,16 +114,13 @@ public class UserSQL_DAL extends UserDAL
             ResultSet resultSet = statement.executeQuery(query);
             resultSet.next();
 
-            if (resultSet.getString(1).length() == 0 && resultSet.getString(2).length() == 0) //lw mafesh value
-                return true;
-
+            resultSet.getString(1);
+            return false;
         }
         catch (SQLException e1)
         {
-            e1.printStackTrace();
+            return true;
         }
-
-        return false;
     }
 
     public static UserDAL getInstance()
@@ -172,7 +173,7 @@ public class UserSQL_DAL extends UserDAL
         }
         catch(SQLException e)
         {
-            return "";
+            return "false";
         }
         token = new String(byteToken); // if the date not expired
         return token;
@@ -206,5 +207,38 @@ public class UserSQL_DAL extends UserDAL
             e.printStackTrace();
         }
         return token;
+    }
+
+    public boolean CheckLoggedIn(String token) {
+        byte[] decoded = Base64.decodeBase64(token.getBytes());
+        System.out.println("Base 64 Decoded  String : " + new String(decoded));
+
+        String decodedtoken = new String(decoded);
+        String[] decodedData = decodedtoken.split("\\.");
+
+        String query = "SELECT USER_TYPE,expire_date FROM `user_`" + " WHERE token = '" + token + "' ";
+
+        ResultSet resultSet = null;
+        try
+        {
+            resultSet = statement.executeQuery(query);
+            resultSet.next();
+
+            int usertype = resultSet.getInt(1);
+            Date expireDate = resultSet.getDate(2);
+
+            long time = System.currentTimeMillis();
+            java.sql.Date currentDate = new java.sql.Date(time);
+
+            if(usertype == Integer.parseInt(decodedData[0]) && expireDate.compareTo(currentDate) == 1)
+                return true;
+
+        }
+        catch (SQLException e)
+        {
+            return false;
+        }
+
+        return false;
     }
 }

@@ -13,6 +13,6 @@ public abstract class UserController
 {
     protected UserSQL_DAL r = (UserSQL_DAL) UserSQL_DAL.getInstance();
 
-    public abstract boolean Signup(String name, String email, String password, String gender, String birthdate, String mobileNo, String address) throws SQLException, ParseException;
+    public abstract String Signup(String name, String email, String password, String gender, String birthdate, String mobileNo, String address) throws SQLException, ParseException;
     //Logout(): void
 }
