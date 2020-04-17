@@ -9,6 +9,8 @@ public class User {
     String gender;
     String mobileNo;
     String address;
+    String token;
+
 
     public User(String name, String email, String pass, String gender, String birthdate, String mobileNo, String address)
     {
