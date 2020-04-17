@@ -83,7 +83,8 @@ public class UserSQL_DAL extends UserDAL
             String query = "SELECT * FROM user_ ";
             ResultSet resultSet = statement.executeQuery(query);
 
-            while (resultSet.next()) {
+            while (resultSet.next())
+            {
                 int type = resultSet.getInt(2);
                 String name = resultSet.getString(3);
                 Date date = resultSet.getDate(4);
