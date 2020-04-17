@@ -79,7 +79,8 @@ public class UserSQL_DAL extends UserDAL
             String query = "SELECT * FROM user_ ";
             ResultSet resultSet = statement.executeQuery(query);
 
-            while (resultSet.next()) {
+            while (resultSet.next())
+            {
                 int type = resultSet.getInt(2);
                 String name = resultSet.getString(3);
                 Date date = resultSet.getDate(4);
@@ -110,16 +111,13 @@ public class UserSQL_DAL extends UserDAL
             ResultSet resultSet = statement.executeQuery(query);
             resultSet.next();
 
-            if (resultSet.getString(1).length() == 0 && resultSet.getString(2).length() == 0) //lw mafesh value
-                return true;
-
+            resultSet.getString(1);
+            return false;
         }
         catch (SQLException e1)
         {
-            e1.printStackTrace();
+            return true;
         }
-
-        return false;
     }
 
     public static UserDAL getInstance()
