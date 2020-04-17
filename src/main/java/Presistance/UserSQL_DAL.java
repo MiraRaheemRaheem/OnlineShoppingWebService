@@ -1,4 +1,5 @@
 package Presistance;
+
 import Entites.User;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -15,7 +16,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class UserSQL_DAL extends UserDAL {
+public class UserSQL_DAL extends UserDAL
+{
     static UserSQL_DAL r;
     static Connection con;
     static Statement statement;
@@ -23,12 +25,12 @@ public class UserSQL_DAL extends UserDAL {
     String userName = "root";
     String password = "123456789";
 
-    private UserSQL_DAL() {
+    private UserSQL_DAL()
+    {
         if (con == null) {
             try {
                 con = DriverManager.getConnection(url, userName, password);
                 statement = con.createStatement();
-                System.out.println("In The IF.");
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -37,7 +39,8 @@ public class UserSQL_DAL extends UserDAL {
     }
 
     @Override
-    public boolean SaveUser(String name, String email, String pass, String gender, String birthdate, String mobileNo, String address, int type) throws ParseException, SQLException {
+    public boolean SaveUser(String name, String email, String pass, String gender, String birthdate, String mobileNo, String address, int type) throws ParseException, SQLException
+    {
         String query = "INSERT INTO `user_`(`USER_TYPE`, `USER_NAME`, `BDATE`, `USER_PASSWORD`, `EMAIL`, `GENDER`, `MOBILE_NUM`, `Address`) VALUES (?,?,?,?,?,?,?,?)";
 
         try {
@@ -66,12 +69,13 @@ public class UserSQL_DAL extends UserDAL {
     }
 
     @Override
-    public List<User> LoadUser() {
-
+    public List<User> LoadUser()
+    {
         ArrayList<User> user_InSystem = new ArrayList<>();
         User user = null;
 
-        try {
+        try
+        {
             String query = "SELECT * FROM user_ ";
             ResultSet resultSet = statement.executeQuery(query);
 
@@ -98,85 +102,106 @@ public class UserSQL_DAL extends UserDAL {
     }
 
     @Override
-    public boolean CheckEmail(String email) {
-        try {
-            String query = "SELECT EMAIL FROM `user_` WHERE EMAIL = '" + email + "' ";
+    public boolean CheckEmailAndUserName(String email, String username)
+    {
+        try
+        {
+            String query = "SELECT EMAIL, USER_NAME FROM `user_` WHERE EMAIL = '" + email + "' and USER_NAME = '"+ username+"'";
             ResultSet resultSet = statement.executeQuery(query);
             resultSet.next();
 
-            if (resultSet.getString(1).length() == 0)
+            if (resultSet.getString(1).length() == 0 && resultSet.getString(2).length() == 0) //lw mafesh value
                 return true;
 
-        } catch (SQLException e1) {
+        }
+        catch (SQLException e1)
+        {
             e1.printStackTrace();
         }
 
         return false;
     }
 
-    public static UserDAL getInstance() {
+    public static UserDAL getInstance()
+    {
         if (r == null) {
             r = new UserSQL_DAL();
         }
         return r;
     }
 
-    public String IsAvailableAccount(String email, String pass)
+    public String IsAvailableAccount(String emailOrName, String pass, String type)
     {
-        String query = "SELECT USER_TYPE,USER_NAME,expire_date,token FROM `user_` WHERE EMAIL = '" + email + "' And USER_PASSWORD = '" + pass + "' ";
-        ResultSet resultSet = null;
+        String query = null ;
+        ResultSet resultSet ;
         byte[] byteToken = new byte[255];
-        String encode, token = null;
+        String token ;
+
+        if(type.equals("email"))
+        {
+            query = "SELECT USER_TYPE,USER_NAME,expire_date,token FROM `user_`" +
+                    " WHERE EMAIL = '" + emailOrName + "' And USER_PASSWORD = '" + pass + "' ";
+        }
+        else if (type.equals("username"))
+        {
+            query = "SELECT USER_TYPE,USER_NAME,expire_date,token FROM `user_`" +
+                    " WHERE USER_NAME = '" + emailOrName + "' And USER_PASSWORD = '" + pass + "' ";
+        }
+
         long time = System.currentTimeMillis();
         java.sql.Date currentDate = new java.sql.Date(time);
 
-        try {
+        try
+        {
             resultSet = statement.executeQuery(query);
             resultSet.next();
-            if (resultSet.getString(2).length() != 0) {
-                int type = resultSet.getInt(1);
+
+            if (resultSet.getString(2).length() != 0)
+            {
+                int usertype = resultSet.getInt(1);
                 String name = resultSet.getString(2);
                 Date expireDate = resultSet.getDate(3);
                 byteToken = resultSet.getBytes(4);
 
-                token = new String(byteToken); // if the date not expired
-                String expdate = expireDate.toString();
-
-
                 if (currentDate.compareTo(expireDate) == 1)
                 {
-                    encode = type + "." + name + "." + email + "." + pass + "." + currentDate;
-                    byteToken = Base64.encodeBase64(encode.getBytes());
-                    token = new String(byteToken);
-
-                    DateTimeFormatter localDate = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-                    LocalDateTime newExpireDate = LocalDateTime.now();
-
-
-                    query = "update`user_` set `token` = ? , `expire_date` = ? where Email = ?";
-
-                    try
-                    {
-                        PreparedStatement preparedStmt = con.prepareStatement(query);
-
-                        preparedStmt = con.prepareStatement(query);
-
-                        preparedStmt.setString(1, token);
-                        preparedStmt.setTimestamp(2,  Timestamp.valueOf(newExpireDate.plusHours(2)));
-                        preparedStmt.setString(3, email);
-
-
-                        preparedStmt.execute();
-
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
+                    token = CreateToken(usertype,name,emailOrName,pass,currentDate) ;
+                    return token;
                 }
-
             }
-
         }
         catch(SQLException e)
+        {
+            return "";
+        }
+        token = new String(byteToken); // if the date not expired
+        return token;
+    }
+
+    public static String CreateToken (int type,String name,String email,String pass,Date currentDate)
+    {
+        String encode ;
+        encode = type + "." + name + "." + email + "." + pass + "." + currentDate;
+        byte[] byteToken = Base64.encodeBase64(encode.getBytes());
+        String token = new String(byteToken);
+
+        LocalDateTime newExpireDate = LocalDateTime.now();
+
+        try
+        {
+            String query = "update`user_` set `token` = ? , `expire_date` = ? where Email = ?";
+
+            PreparedStatement preparedStmt ;
+
+            preparedStmt = con.prepareStatement(query);
+
+            preparedStmt.setString(1, token);
+            preparedStmt.setTimestamp(2,  Timestamp.valueOf(newExpireDate.plusHours(2)));
+            preparedStmt.setString(3, email);
+
+            preparedStmt.execute();
+        }
+        catch (SQLException e)
         {
             e.printStackTrace();
         }
