@@ -12,15 +12,20 @@ public class Authentication implements IAuthentiction
     UserSQL_DAL r = (UserSQL_DAL) UserSQL_DAL.getInstance();
     public String LoginByName(String userName, String password)
     {
-        return "";
+        String token = r.IsAvailableAccount(userName, password, "username");
+
+        /*byte[] decoded = Base64.decodeBase64(token.getBytes());
+        System.out.println("Base 64 Decoded  String : " + new String(decoded));*/
+
+        return token;
     }
 
-    public String LoginByEmail(String email, String password)  {
-        String token = r.IsAvailableAccount(email, password);
+    public String LoginByEmail(String email, String password)
+    {
+        String token = r.IsAvailableAccount(email, password, "email");
 
-        byte[] decoded = Base64.decodeBase64(token.getBytes());
-
-        System.out.println("Base 64 Decoded  String : " + new String(decoded));
+        /*byte[] decoded = Base64.decodeBase64(token.getBytes());
+        System.out.println("Base 64 Decoded  String : " + new String(decoded));*/
 
         return token;
     }

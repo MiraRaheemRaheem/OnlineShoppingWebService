@@ -1,9 +1,7 @@
 package Services;
 
 import Entites.Administrator;
-import Entites.ShopOwner;
 import Entites.User;
-import Presistance.UserSQL_DAL;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,7 +23,7 @@ public class AdministratorController extends UserController
     public boolean Signup(@PathVariable String name, @PathVariable String email, @PathVariable
             String password, @PathVariable String gender, @PathVariable String birthdate, @PathVariable String mobileNo, @PathVariable String address) throws ParseException, SQLException
     {
-        if(r.CheckEmail(email) == true)
+        if(r.CheckEmailAndUserName(email,name) == true)
         {
             r.SaveUser(name,email, password,gender,birthdate, mobileNo,address,3);
             return true;
