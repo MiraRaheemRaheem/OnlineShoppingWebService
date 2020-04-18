@@ -1,8 +1,6 @@
 package Services;
 
 import Entites.NormalUser;
-import Presistance.UserDAL;
-import Presistance.UserSQL_DAL;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
@@ -20,9 +18,9 @@ public class NormalController extends UserController
     String password,@PathVariable String gender, @PathVariable String birthdate, @PathVariable String mobileNo,@PathVariable String address) throws SQLException, ParseException
     {
         String token;
-        if(r.CheckEmailAndUserName(email,name) == true && password.length() >= 4)
+        if(sql_dal.CheckEmailAndUserName(email,name) == true && password.length() >= 4)
         {
-            token = r.SaveUser(name,email, password,gender,birthdate, mobileNo,address,1);
+            token = sql_dal.SaveUser(name,email, password,gender,birthdate, mobileNo,address,1);
             if (token.equals("false"))
                 return "Invalid Input";
             else
