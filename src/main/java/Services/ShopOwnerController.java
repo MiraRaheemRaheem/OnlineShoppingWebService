@@ -1,7 +1,6 @@
 package Services;
 
 import Entites.ShopOwner;
-import Presistance.UserSQL_DAL;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,17 +16,21 @@ public class ShopOwnerController extends UserController
 
     @Override
     @RequestMapping(path = "/SignupAsShopOwner/{name}/{email}/{password}/{gender}/{birthdate}/{mobileNo}/{address}", method = RequestMethod.GET )
-    public boolean Signup(@PathVariable String name, @PathVariable String email, @PathVariable
+    public String Signup(@PathVariable String name, @PathVariable String email, @PathVariable
             String password, @PathVariable String gender, @PathVariable String birthdate, @PathVariable String mobileNo, @PathVariable String address) throws ParseException, SQLException
     {
 
-        if(r.CheckEmail(email) == true)
+        String token;
+        if(r.CheckEmailAndUserName(email,name) == true && password.length() >= 4)
         {
-            r.SaveUser(name,email, password,gender,birthdate, mobileNo,address,2);
-            return true;
+            token = r.SaveUser(name,email, password,gender,birthdate, mobileNo,address,2);
+            if (token.equals("false"))
+                return "Invalid Input";
+            else
+                return "Signed Up Successfully " + token;
         }
         else
-            return false;
+            return "Invalid Input";
     }
 
 }
