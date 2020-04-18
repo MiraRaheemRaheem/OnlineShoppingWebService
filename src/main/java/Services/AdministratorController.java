@@ -5,12 +5,9 @@ import Entites.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -25,9 +22,9 @@ public class AdministratorController extends UserController
             String password, @PathVariable String gender, @PathVariable String birthdate, @PathVariable String mobileNo, @PathVariable String address) throws ParseException, SQLException
     {
         String token;
-        if(r.CheckEmailAndUserName(email,name) == true && password.length() >= 4)
+        if(sql_dal.CheckEmailAndUserName(email,name) == true && password.length() >= 4)
         {
-            token = r.SaveUser(name,email, password,gender,birthdate, mobileNo,address,3);
+            token = sql_dal.SaveUser(name,email, password,gender,birthdate, mobileNo,address,3);
             if (token.equals("false"))
                 return "Invalid Input";
             else
@@ -41,8 +38,9 @@ public class AdministratorController extends UserController
     public List<User> GetRegisteredUsersInSystem(@PathVariable String token)
     {
 
-        if(r.CheckLoggedIn(token)) {
-            usersInSytem = r.LoadUser();
+        if(sql_dal.CheckLoggedIn(token))
+        {
+            usersInSytem = sql_dal.LoadUser();
             return usersInSytem;
         }
         throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED,

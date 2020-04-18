@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.sql.SQLException;
 import java.text.ParseException;
 
@@ -21,9 +20,9 @@ public class ShopOwnerController extends UserController
     {
 
         String token;
-        if(r.CheckEmailAndUserName(email,name) == true && password.length() >= 4)
+        if(sql_dal.CheckEmailAndUserName(email,name) == true && password.length() >= 4)
         {
-            token = r.SaveUser(name,email, password,gender,birthdate, mobileNo,address,2);
+            token = sql_dal.SaveUser(name,email, password,gender,birthdate, mobileNo,address,2);
             if (token.equals("false"))
                 return "Invalid Input";
             else
