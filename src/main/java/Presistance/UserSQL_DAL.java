@@ -2,23 +2,17 @@ package Presistance;
 
 import Entites.User;
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.springframework.format.annotation.DateTimeFormat;
-
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.DateTimeException;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 public class UserSQL_DAL extends UserDAL
 {
-    static UserSQL_DAL r;
+    static UserSQL_DAL sql_dal;
     static Connection con;
     static Statement statement;
     String url = "jdbc:mysql://localhost:3306/online_shopping";
@@ -126,12 +120,13 @@ public class UserSQL_DAL extends UserDAL
 
     public static UserDAL getInstance()
     {
-        if (r == null) {
-            r = new UserSQL_DAL();
+        if (sql_dal == null) {
+            sql_dal = new UserSQL_DAL();
         }
-        return r;
+        return sql_dal;
     }
 
+    @Override
     public String IsAvailableAccount(String emailOrName, String pass, String type)
     {
         String query = null ;
@@ -180,7 +175,7 @@ public class UserSQL_DAL extends UserDAL
         return token;
     }
 
-    public static String CreateToken (int type,String name,String email,String pass,Date currentDate)
+    public String CreateToken(int type, String name, String email, String pass, Date currentDate)
     {
         String encode ;
         encode = type + "." + name + "." + email + "." + pass + "." + currentDate;
@@ -210,7 +205,9 @@ public class UserSQL_DAL extends UserDAL
         return token;
     }
 
-    public boolean CheckLoggedIn(String token) {
+    @Override
+    public boolean CheckLoggedIn(String token)
+    {
         byte[] decoded = Base64.decodeBase64(token.getBytes());
         System.out.println("Base 64 Decoded  String : " + new String(decoded));
 
